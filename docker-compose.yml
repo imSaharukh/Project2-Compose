@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  dind:
+    image: docker:20.10-dind
+    container_name: dind
+    privileged: true
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+    volumes:
+      - docker-certs-ca:/certs/ca
+      - docker-certs-client:/certs/client
+      - jenkins-data:/var/jenkins_home
+      - docker-data:/var/lib/docker
+    networks:
+      - jenkins
+    restart: unless-stopped
+
+  jenkins:
+    image: jenkins/jenkins:lts-jdk11
+    container_name: jenkins
+    privileged: true
+    user: root
+    environment:
+      DOCKER_HOST: "tcp://dind:2376"
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_TLS_VERIFY: 1
+    volumes:
+      - docker-certs-client:/certs/client:ro
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8080:8080"   # Jenkins Web UI
+      - "50000:50000" # Jenkins agent port
+    networks:
+      - jenkins
+    restart: unless-stopped
+
+volumes:
+  jenkins-data:
+  docker-certs-ca:
+  docker-certs-client:
+  docker-data:
+
+networks:
+  jenkins:
