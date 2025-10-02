@@ -1,0 +1,15 @@
+jenkins:
+  systemMessage: "Jenkins configured as code!"
+  numExecutors: 2
+
+security:
+  realm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "admin"
+
+unclassified:
+  location:
+    url: "http://localhost:8080/"

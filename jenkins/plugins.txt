@@ -1,0 +1,9 @@
+workflow-aggregator
+git
+credentials-binding
+docker-workflow
+docker-plugin
+audit-trail
+warnings-ng
+configuration-as-code
+matrix-auth
