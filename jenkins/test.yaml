@@ -1,18 +1,15 @@
 jenkins:
-  securityRealm:
-    activeDirectory:
-      domains:
-        - name: "example"
-          servers: "ad.example.com"
-          bindName: "CN=bind_user,CN=Users,DC=example,DC=com"
-          bindPassword: "${AD_BIND_PASSWORD}"
-          userSearchBase: "CN=Users,DC=example,DC=com"
-          userSearch: "(sAMAccountName={0})"
-          groupSearchBase: "CN=Users,DC=example,DC=com"
-          groupSearch: "(member={0})"
-          groupMembershipStrategy: "FROM_GROUPS"
-          cache:
-            size: 1000
-            ttl: 600
-          startTls: true
-          trustAllCertificates: false
+  systemMessage: "Jenkins configured as code!"
+  numExecutors: 2
+
+security:
+  realm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "admin"
+
+unclassified:
+  location:
+    url: "http://localhost:8080/"

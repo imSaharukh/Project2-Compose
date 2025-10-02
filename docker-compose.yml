@@ -45,7 +45,7 @@ services:
       DOCKER_CERT_PATH: /certs/client
       DOCKER_TLS_VERIFY: "1"
       # Seed Jenkins via Configuration as Code (CASC)
-      # CASC_JENKINS_CONFIG: /var/jenkins_home/casc.yaml
+      CASC_JENKINS_CONFIG: /var/jenkins_home/casc.yaml
       JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"
       CASC_LOG_LEVEL: "FINE"
       CASC_DEBUG: "true"
