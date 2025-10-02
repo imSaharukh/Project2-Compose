@@ -1,14 +1,15 @@
-
 jenkins:
-  systemMessage: "ISEC6000 Secure DevOps  Assignment 2 Jenkins (CASC seeded)"
+  systemMessage: "ISEC6000 Secure DevOps Assignment 2 Jenkins (CASC seeded)"
+  numExecutors: 2
+  disableRememberMe: true
   securityRealm:
     local:
       allowsSignup: false
       users:
         - id: "admin"
-          password: "${ADMIN_PASSWORD:-Admin_ChangeMe123}"
+          password: "admin"
         - id: "ciuser"
-          password: "${CIUSER_PASSWORD:-Ciuser_ChangeMe123}"
+          password: "admin"
   authorizationStrategy:
     globalMatrix:
       permissions:
@@ -19,15 +20,16 @@ jenkins:
         - "Job/Workspace:ciuser"
         - "Run/Replay:ciuser"
         - "SCM/Tag:ciuser"
-  disableRememberMe: true
-  numExecutors: 2
+
 unclassified:
   location:
     url: "http://localhost:8080/"
-  audit-trail:
+  auditTrail:
+    displayUserName: true
     logBuildCause: true
-    logCredentials: false
+    logCredentialsUsage: false
+    logScriptUsage: false
     pattern: ".*/.*"
-    writers:
+    loggers:
       - file:
           log: "/var/jenkins_home/audit.log"
