@@ -1,20 +1,54 @@
-version: '3.9'
+version: "3.7"
+
+# Persistent storage
+volumes:
+  jenkins-data: {}          # Jenkins home data
+  docker-certs-ca: {}       # DinD CA certificates
+  docker-certs-client: {}   # Client certificates for Jenkins
+  dind-data: {}             # Docker image/layer cache
+
+networks:
+  jenkins: {}
 
 services:
-  jenkins:
-    image: docker/jenkins-docker:2.416.2-lts
-    container_name: jenkins
-    user: root
+  dind:
+    image: docker:27-dind
+    privileged: true         # Needed to run Docker inside Docker
     environment:
-      # Use host Docker
-      DOCKER_HOST: "unix:///var/run/docker.sock"
+      DOCKER_TLS_CERTDIR: /certs
+    networks:
+      jenkins:
+        aliases:
+          - docker           # Jenkins connects to DinD using this hostname
+    volumes:
+      - docker-certs-ca:/certs/ca
+      - docker-certs-client:/certs/client
+      - dind-data:/var/lib/docker
+    healthcheck:
+      test: ["CMD-SHELL", "docker info >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+
+  jenkins:
+    build:
+      context: ./jenkins     # Custom Jenkins Dockerfile
+    user: root               # Allows installing plugins/tools
+    environment:
+      DOCKER_HOST: tcp://docker:2376
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_TLS_VERIFY: "1"
+      CASC_JENKINS_CONFIG: /var/jenkins_home/casc.yaml   # Config-as-Code
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"
+    networks:
+      - jenkins
+    ports:
+      - "8080:8080"          # Jenkins UI
+      - "50000:50000"        # Agent communication
     volumes:
       - jenkins-data:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - "8080:8080"    # Jenkins Web UI
-      - "50000:50000"  # Jenkins agent port
+      - docker-certs-client:/certs/client:ro
+    depends_on:
+      dind:
+        condition: service_healthy
     restart: unless-stopped
-
-volumes:
-  jenkins-data:
