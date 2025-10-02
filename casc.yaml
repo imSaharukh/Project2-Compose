@@ -1,0 +1,42 @@
+jenkins:
+  systemMessage: "ISEC6000 Secure DevOps – Assignment 2 Jenkins (CASC seeded)"
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "${ADMIN_PASSWORD:-Admin_ChangeMe123}"
+        - id: "ciuser"
+          password: "${CIUSER_PASSWORD:-Ciuser_ChangeMe_ChangeMe123}"
+  authorizationStrategy:
+    globalMatrix:
+      entries:
+        - user: "admin"
+          permissions:
+            - "Overall/Administer"
+        - group: "authenticated"
+          permissions:
+            - "Overall/Read"
+        - user: "ciuser"
+          permissions:
+            - "Job/Read"
+            - "Job/Build"
+            - "Job/Workspace"
+            - "Run/Replay"
+            - "SCM/Tag"
+  disableRememberMe: true
+  numExecutors: 2
+
+unclassified:
+  location:
+    # set this to the real external URL (not localhost) if users connect from outside the container/host
+    url: "http://localhost:8080/"
+  audit-trail:
+    displayUserName: true
+    logBuildCause: true
+    logCredentialsUsage: false
+    logScriptUsage: false
+    pattern: ".*/.*"
+    loggers:
+      - file:
+          log: "/var/jenkins_home/audit.log"
