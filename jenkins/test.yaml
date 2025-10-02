@@ -1,25 +1,18 @@
 jenkins:
-  systemMessage: "Jenkins configured with CasC!"
-  numExecutors: 2
   securityRealm:
-    local:
-      allowsSignup: false
-      users:
-        - id: "admin"
-          password: "admin123"
-        - id: "ciuser"
-          password: "ciuser123"
-  authorizationStrategy:
-    globalMatrix:
-      entries:
-        - user: "admin"
-          permissions:
-            - "Overall/Administer"
-        - user: "ciuser"
-          permissions:
-            - "Job/Read"
-            - "Job/Build"
-
-unclassified:
-  location:
-    url: "http://localhost:8080/"
+    activeDirectory:
+      domains:
+        - name: "example"
+          servers: "ad.example.com"
+          bindName: "CN=bind_user,CN=Users,DC=example,DC=com"
+          bindPassword: "${AD_BIND_PASSWORD}"
+          userSearchBase: "CN=Users,DC=example,DC=com"
+          userSearch: "(sAMAccountName={0})"
+          groupSearchBase: "CN=Users,DC=example,DC=com"
+          groupSearch: "(member={0})"
+          groupMembershipStrategy: "FROM_GROUPS"
+          cache:
+            size: 1000
+            ttl: 600
+          startTls: true
+          trustAllCertificates: false
