@@ -1,14 +1,24 @@
 jenkins:
-  systemMessage: "Jenkins configured as code!"
+  systemMessage: "Jenkins configured with CasC!"
   numExecutors: 2
-
-security:
-  realm:
+  securityRealm:
     local:
       allowsSignup: false
       users:
         - id: "admin"
-          password: "admin"
+          password: "admin123"
+        - id: "ciuser"
+          password: "ciuser123"
+  authorizationStrategy:
+    globalMatrix:
+      entries:
+        - user: "admin"
+          permissions:
+            - "Overall/Administer"
+        - user: "ciuser"
+          permissions:
+            - "Job/Read"
+            - "Job/Build"
 
 unclassified:
   location:
