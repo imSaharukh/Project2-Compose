@@ -1,7 +1,6 @@
+---
 jenkins:
   systemMessage: "ISEC6000 Secure DevOps Assignment 2 Jenkins (CASC seeded)"
-  numExecutors: 2
-  disableRememberMe: true
   securityRealm:
     local:
       allowsSignup: false
@@ -12,19 +11,27 @@ jenkins:
           password: "admin"
   authorizationStrategy:
     globalMatrix:
-      permissions:
-        - "Overall/Administer:admin"
-        - "Overall/Read:authenticated"
-        - "Job/Read:ciuser"
-        - "Job/Build:ciuser"
-        - "Job/Workspace:ciuser"
-        - "Run/Replay:ciuser"
-        - "SCM/Tag:ciuser"
+      entries:
+        - user: "admin"
+          permissions:
+            - "Overall/Administer"
+        - group: "authenticated"
+          permissions:
+            - "Overall/Read"
+        - user: "ciuser"
+          permissions:
+            - "Job/Read"
+            - "Job/Build"
+            - "Job/Workspace"
+            - "Run/Replay"
+            - "SCM/Tag"
+  disableRememberMe: true
+  numExecutors: 2
 
 unclassified:
   location:
     url: "http://localhost:8080/"
-  auditTrail:
+  audit-trail:
     displayUserName: true
     logBuildCause: true
     logCredentialsUsage: false
