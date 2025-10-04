@@ -1,15 +1,34 @@
+---
 jenkins:
-  systemMessage: "Jenkins configured as code!"
-  numExecutors: 2
-
-security:
-  realm:
+  systemMessage: "ISEC6000 Secure DevOps Assignment 2 Jenkins (CASC seeded)"
+  securityRealm:
     local:
       allowsSignup: false
       users:
         - id: "admin"
           password: "admin"
+        - id: "ciuser"
+          password: "admin"
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "USER:Overall/Administer:admin"
+        - "GROUP:Overall/Read:authenticated"
+        - "USER:Job/Read:ciuser"
+        - "USER:Job/Build:ciuser"
+        - "USER:Job/Workspace:ciuser"
+        - "USER:Run/Replay:ciuser"
+        - "USER:SCM/Tag:ciuser"
+  disableRememberMe: true
+  numExecutors: 2
 
-unclassified:
-  location:
-    url: "http://localhost:8080/"
+
+# unclassified:
+#   auditTrail:
+#     enabled: true
+#     displayBuildCause: true
+#     displayUserName: true
+#     logCredentialsUsage: false
+#     logScriptUsage: false
+#     pattern: ".*"
+#     logFile: "/var/jenkins_home/audit.log"

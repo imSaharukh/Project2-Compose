@@ -11,32 +11,24 @@ jenkins:
           password: "admin"
   authorizationStrategy:
     globalMatrix:
-      entries:
-        - user: "admin"
-          permissions:
-            - "Overall/Administer"
-        - group: "authenticated"
-          permissions:
-            - "Overall/Read"
-        - user: "ciuser"
-          permissions:
-            - "Job/Read"
-            - "Job/Build"
-            - "Job/Workspace"
-            - "Run/Replay"
-            - "SCM/Tag"
+      permissions:
+        - "USER:Overall/Administer:admin"
+        - "GROUP:Overall/Read:authenticated"
+        - "USER:Job/Read:ciuser"
+        - "USER:Job/Build:ciuser"
+        - "USER:Job/Workspace:ciuser"
+        - "USER:Run/Replay:ciuser"
+        - "USER:SCM/Tag:ciuser"
   disableRememberMe: true
   numExecutors: 2
 
-unclassified:
-  location:
-    url: "http://localhost:8080/"
-  audit-trail:
-    displayUserName: true
-    logBuildCause: true
-    logCredentialsUsage: false
-    logScriptUsage: false
-    pattern: ".*/.*"
-    loggers:
-      - file:
-          log: "/var/jenkins_home/audit.log"
+
+# unclassified:
+#   auditTrail:
+#     enabled: true
+#     displayBuildCause: true
+#     displayUserName: true
+#     logCredentialsUsage: false
+#     logScriptUsage: false
+#     pattern: ".*"
+#     logFile: "/var/jenkins_home/audit.log"
